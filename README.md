@@ -1,58 +1,61 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Calculadora de Rescisão Trabalhista CLT
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Bem-vindo ao projeto **Utilitários Git - Calculadora de Rescisão Trabalhista**. Este é um SaaS grátis e público voltado ao SEO, desenhado para tirar dúvidas reais sobre rescisão trabalhista.
 
-## About Laravel
+## Arquitetura e Decisões Técnicas
+- **Laravel 12 / PHP 8.3:** Backend com motor seguro de cálculo para evitar o vazamento de lógica num SPA, utilizando princípios SOLID via injenção de dependências em Serviços puros em `/app/Services`.
+- **Frontend Stack:** Blade + Tailwind CSS (via Vite) + Alpine.js. A calculadora atualiza via AJAX com debounce, para propiciar o máximo de performance. O uso de Blade server-rendered confere grande viés em pontuações de SEO/Core Web Vitals.
+- **Banco de Dados:** SQLite nativo habilitado. Apenas utilizado para migrar e (futuramente) salvar rodadas com URLs customizadas que superem as limitações do Base64 encodado via query params.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Estrutura do App
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Motor de Regras (`app/Services/`)**
+  - Orquestra, injeta, e processa dados.
+  - Tabelas de Imposto e FGTS estão encapsuladas e modulares (e.g., `DescontosService.php`).
+- **Páginas de SEO (`resources/views/pages/calculadoras/rescisao/`)**
+  - Interface base, FAQ integrado, views satélites.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Como Iniciar Para Desenvolvimento
 
-## Learning Laravel
+1. Configure o repositório local e instale as dependências.
+   ```bash
+   composer install
+   npm install
+   ```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+2. Gere a key do Laravel caso falte.
+   ```bash
+   php artisan key:generate
+   ```
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+3. Crie e Migre o banco:
+   ```bash
+   touch database/database.sqlite
+   php artisan migrate
+   ```
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+4. Compile o frontend:
+   ```bash
+   npm run build
+   # ou
+   npm run dev
+   ```
 
-## Agentic Development
+5. Inicialize o servidor PHP:
+   ```bash
+   php artisan serve
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Checklist de SEO Incluído
+- Título/Meta descriptions únicos via templates (`@yield`).
+- JSON-LD injetado no HTML de base da calculadora listando-a como "WebApplication" e "BusinessApplication".
+- FAQs originais com seções informativas.
 
+## Testes Reais
+
+Basta rodar no Laravel:
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan test
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> "Um código bom é como uma boa rescisão, tudo certinho e sem surpresas".
