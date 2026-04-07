@@ -1,14 +1,41 @@
 version: '3.8'
 
 services:
+  web:
+    image: nginx:alpine
+    container_name: web_calculadora
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      - .:/app
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - app_network
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: app_calculadora
     restart: unless-stopped
-    ports:
-      - "${APP_PORT:-8000}:8000"
+    # Expose porta FPM internal, nao public port local 8000
+    expose:
+      - "9000"
+    environment:
+      - APP_ENV=${APP_ENV}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - DB_CONNECTION=${DB_CONNECTION}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
     volumes:
       - .:/app
     depends_on:
