@@ -1,6 +1,6 @@
-FROM php:8.3-cli-alpine
+FROM php:8.3-fpm-alpine
 
-# Instalar dependências de sistema
+# Instalar dependências de sistema mínimas e de build
 RUN apk add --no-cache \
     bash \
     curl \
@@ -11,8 +11,8 @@ RUN apk add --no-cache \
     nodejs \
     npm
 
-# Instalar extensões PHP (Postgres, MySQL, GD, Zip)
-RUN docker-php-ext-install gd zip pdo pdo_pgsql pdo_mysql
+# Instalar extensões PHP (Postgres, MySQL, GD, Zip, OPcache)
+RUN docker-php-ext-install gd zip pdo pdo_pgsql pdo_mysql opcache
 
 # Instalar e habilitar Redis
 RUN apk add --no-cache pcre-dev $PHPIZE_DEPS \
@@ -20,24 +20,27 @@ RUN apk add --no-cache pcre-dev $PHPIZE_DEPS \
     && docker-php-ext-enable redis \
     && apk del pcre-dev $PHPIZE_DEPS
 
+# Copias de OPcache e PHP configs otimizados pro FPM
+COPY ./docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
+COPY ./docker/php/fpm-performance.conf /usr/local/etc/php-fpm.d/zz-docker.conf
+
 # Obter Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Diretório de trabalho
 WORKDIR /app
 
-# Copiar projeto
+# Copiar script de boot
+COPY ./docker/scripts/start-app.sh /usr/local/bin/start-app.sh
+RUN chmod +x /usr/local/bin/start-app.sh
+
+# Não fazemos COPY manual do projeto nesta imagem base em caso de Bind de volume 
+# Mas para garantir build prod pronta, deixaremos:
 COPY . .
 
-# Instalar dependências PHP e Node, e buildar assets
 RUN composer install --no-interaction --optimize-autoloader
 RUN npm install && npm run build
-
-# Ajustar permissões para os diretórios sensíveis do Laravel
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
-# Expor porta
-EXPOSE 8000
+EXPOSE 9000
 
-# Comando padrão
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["/usr/local/bin/start-app.sh"]
