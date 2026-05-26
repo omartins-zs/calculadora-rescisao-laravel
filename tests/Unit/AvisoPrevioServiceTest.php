@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Services\AvisoPrevioService;
+use PHPUnit\Framework\TestCase;
 
 class AvisoPrevioServiceTest extends TestCase
 {
@@ -12,7 +12,7 @@ class AvisoPrevioServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new AvisoPrevioService();
+        $this->service = new AvisoPrevioService;
     }
 
     public function test_calcular_dias_base_menor_de_um_ano(): void

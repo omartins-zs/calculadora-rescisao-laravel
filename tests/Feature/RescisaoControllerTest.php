@@ -49,7 +49,7 @@ class RescisaoControllerTest extends TestCase
             'salario_base_mensal',
             'data_admissao',
             'data_desligamento',
-            'motivo_rescisao'
+            'motivo_rescisao',
         ]);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Services\DescontosService;
+use PHPUnit\Framework\TestCase;
 
 class DescontosServiceTest extends TestCase
 {
@@ -12,7 +12,7 @@ class DescontosServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new DescontosService();
+        $this->service = new DescontosService;
     }
 
     public function test_inss_isento_ou_minimo(): void
@@ -46,7 +46,7 @@ class DescontosServiceTest extends TestCase
     {
         // Salário base INSS deduzido = 3000
         $resultado = $this->service->calcularIRRF(3000.00, 0, true, true);
-        
+
         // Base 3000 -> Com desconto simplificado de 607.20 -> Nova base: 2392.80
         // Como 2392.80 <= 2428.80 (Isento na tabela 2026), desconto esperado é 0
         $this->assertEquals(0, $resultado['desconto']);
@@ -56,12 +56,12 @@ class DescontosServiceTest extends TestCase
     {
         // Salário base 6000 com 5 dependentes
         $resultado = $this->service->calcularIRRF(6000.00, 5, false, false);
-        
+
         // Dedução dependentes: 5 * 189.59 = 947.95
         // Base Real: 6000 - 947.95 = 5052.05
         // Cai na faixa 27.5% com dedução de 908.73
         // Imposto Bruto: (5052.05 * 0.275) - 908.73 = 1389.31375 - 908.73 = 480.58
-        
+
         $this->assertEqualsWithDelta(480.58, $resultado['desconto'], 0.01);
     }
 }

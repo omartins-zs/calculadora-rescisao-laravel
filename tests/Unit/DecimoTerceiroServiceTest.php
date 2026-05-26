@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Services\DecimoTerceiroService;
+use PHPUnit\Framework\TestCase;
 
 class DecimoTerceiroServiceTest extends TestCase
 {
@@ -12,7 +12,7 @@ class DecimoTerceiroServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new DecimoTerceiroService();
+        $this->service = new DecimoTerceiroService;
     }
 
     public function test_calcular_avos_no_ano_completo(): void

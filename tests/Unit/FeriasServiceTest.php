@@ -2,8 +2,8 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
 use App\Services\FeriasService;
+use PHPUnit\Framework\TestCase;
 
 class FeriasServiceTest extends TestCase
 {
@@ -12,7 +12,7 @@ class FeriasServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new FeriasService();
+        $this->service = new FeriasService;
     }
 
     public function test_avos_ferias_fracao_maior_15_dias(): void

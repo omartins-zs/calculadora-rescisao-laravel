@@ -220,6 +220,15 @@
                             />
                         </div>
 
+                        <div class="pt-2">
+                            <button type="button" @click="limpar()" class="w-full flex justify-center items-center gap-2 py-3 px-4 rounded-xl font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700/50 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Limpar Dados
+                            </button>
+                        </div>
+
                     </form>
                 </x-card>
             </div>
@@ -455,6 +464,28 @@
                 } finally {
                     this.isLoading = false;
                 }
+            },
+
+            limpar() {
+                this.form = {
+                    salario_base_mensal: '',
+                    data_admissao: '',
+                    data_desligamento: '',
+                    motivo_rescisao: 'dispensa_sem_justa_causa',
+                    tipo_aviso_previo: 'nao_sei',
+                    possui_ferias_vencidas: false,
+                    qtd_periodos_ferias_vencidas: 1,
+                    saldo_fgts_para_fins_rescisorios: '',
+                    salario_variavel_media_12m: '',
+                    adiantamento_salarial: '',
+                    dependentes_ir: 0
+                };
+                
+                this.result = {
+                    items: [],
+                    totals: { bruto_formatado: 'R$ 0,00', descontos_formatado: 'R$ 0,00', liquido_formatado: 'R$ 0,00' },
+                    fgts: { multa_formatada: 'R$ 0,00', is_estimativa: false }
+                };
             }
         }))
     })
