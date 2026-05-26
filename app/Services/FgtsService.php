@@ -14,10 +14,10 @@ class FgtsService
         ?float $estimativaTotalBrutoAoLongoDoTempo = null
     ): array {
         $depositoMes = $baseFgts * 0.08;
-        
+
         $saldoBaseParaMulta = $saldoFgtsInformado;
         $isEstimativa = false;
-        
+
         if ($saldoBaseParaMulta === null) {
             $saldoBaseParaMulta = ($estimativaTotalBrutoAoLongoDoTempo ?? 0) * 0.08;
             $isEstimativa = true;
@@ -25,10 +25,10 @@ class FgtsService
 
         // Adiciona o do mês na base rescisória, conforme lei o saque tem direito a mesma multa
         $baseTotalComMes = $saldoBaseParaMulta + $depositoMes;
-        
+
         $multaFgts = 0;
         $percentualMulta = 0;
-        
+
         if ($motivoRescisao === 'dispensa_sem_justa_causa') {
             $percentualMulta = 0.40;
             $multaFgts = $baseTotalComMes * $percentualMulta;
@@ -38,12 +38,12 @@ class FgtsService
         }
 
         return [
-            'deposito_mes' => $depositoMes,
-            'saldo_base_utilizado' => $saldoBaseParaMulta,
+            'deposito_mes' => round($depositoMes, 2),
+            'saldo_base_utilizado' => round($saldoBaseParaMulta, 2),
             'is_estimativa' => $isEstimativa,
             'percentual_multa' => $percentualMulta,
-            'multa' => $multaFgts,
-            'total_fgts_estimado' => $saldoBaseParaMulta + $depositoMes + $multaFgts
+            'multa' => round($multaFgts, 2),
+            'total_fgts_estimado' => round($saldoBaseParaMulta + $depositoMes + $multaFgts, 2),
         ];
     }
 }
