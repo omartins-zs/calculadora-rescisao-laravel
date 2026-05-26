@@ -8,13 +8,13 @@
 <!-- Schema Markup JSON-LD -->
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
+  "{{ '@context' }}": "https://schema.org",
+  "{{ '@type' }}": "WebApplication",
   "name": "Calculadora de Rescisão Trabalhista CLT",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "All",
   "offers": {
-    "@type": "Offer",
+    "{{ '@type' }}": "Offer",
     "price": "0"
   },
   "description": "Simulador para calcular o valor da rescisão de contrato de trabalho conforme regras CLT.",
@@ -22,15 +22,41 @@
 }
 </script>
 
-<div class="bg-gradient-to-b from-brand-50 to-white dark:from-slate-900 dark:to-slate-900 pb-12 pt-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div class="text-center max-w-3xl mx-auto mb-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
-                Calculadora de <span class="text-brand-600 dark:text-brand-400">Rescisão</span> Trabalhista
+<div class="relative overflow-hidden
+              bg-gradient-to-b from-brand-50/80 via-slate-50 to-slate-50
+              dark:from-brand-950/30 dark:via-slate-950 dark:to-slate-950
+              pb-24 pt-10">
+
+    {{-- Decorative background blobs --}}
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 overflow-hidden">
+        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-[900px] h-[400px]
+                    bg-brand-500/5 dark:bg-brand-400/5 rounded-full blur-3xl"></div>
+        <div class="absolute top-10 right-0 w-72 h-72
+                    bg-indigo-500/5 dark:bg-indigo-400/5 rounded-full blur-2xl"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full
+                        bg-brand-100 dark:bg-brand-950/60
+                        border border-brand-200 dark:border-brand-900
+                        text-brand-700 dark:text-brand-400 text-xs font-semibold
+                        mb-6 animate-fade-in">
+                <span class="inline-block w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                Atualizado com tabelas CLT 2026
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold
+                       text-slate-900 dark:text-white tracking-tight mb-5 leading-tight">
+                Calculadora de
+                <span class="bg-gradient-to-r from-brand-600 to-emerald-500
+                             dark:from-brand-400 dark:to-emerald-400
+                             bg-clip-text text-transparent">Rescisão</span>
+                Trabalhista
             </h1>
-            <p class="text-lg text-slate-600 dark:text-slate-400">
-                Descubra em 2 minutos quanto você deve receber (ou pagar) na sua rescisão de contrato. Simulação baseada nas leis atuais da CLT (Tabelas 2026).
+            <p class="text-lg md:text-xl text-slate-600 dark:text-slate-400 leading-relaxed">
+                Descubra em 2 minutos quanto você deve receber (ou pagar) na sua rescisão de contrato.
+                Simulação baseada nas leis atuais da CLT.
             </p>
         </div>
 
@@ -47,32 +73,60 @@
                                 </svg>
                                 Preencha os Dados
                             </h2>
-                            <button @click="showAdvanced = !showAdvanced" class="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline">
+                            <button @@click="showAdvanced = !showAdvanced" class="text-sm font-medium text-brand-600 dark:text-brand-400 hover:underline">
                                 <span x-text="showAdvanced ? 'Modo Simples' : 'Modo Avançado'"></span>
                             </button>
                         </div>
                     </x-slot>
 
-                    <form class="space-y-5" @input.debounce.500ms="calcular()">
-                        
+                    <form class="space-y-5" @@input.debounce.500ms="calcular()">
+
                         <!-- Dados Base -->
                         <div class="space-y-4">
-                            <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tempo e Salário</h3>
-                            
-                            <x-input model="form.salario_base_mensal" type="number" step="0.01" label="Salário Bruto Principal (R$)" name="salario" placeholder="Ex: 3500.00" helper="Seu salário base registrado." />
-                            
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold">1</span>
+                                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tempo e Salário</h3>
+                            </div>
+
+                            <x-input
+                                model="form.salario_base_mensal"
+                                type="text"
+                                x-mask:dynamic="$money($input, ',', '.', 2)"
+                                label="Salário Bruto (R$)"
+                                name="salario"
+                                placeholder="Ex: 3.500,00"
+                                icon="currency"
+                                helper="Salário base registrado em carteira."
+                            />
+
                             <div class="grid grid-cols-2 gap-4">
-                                <x-input model="form.data_admissao" type="date" label="Data de Entrada" name="admissao" />
-                                <x-input model="form.data_desligamento" type="date" label="Data de Saída" name="saida" helper="Último dia trabalhado." />
+                                <x-input
+                                    model="form.data_admissao"
+                                    type="date"
+                                    label="Data de Entrada"
+                                    name="admissao"
+                                    icon="calendar"
+                                />
+                                <x-input
+                                    model="form.data_desligamento"
+                                    type="date"
+                                    label="Data de Saída"
+                                    name="saida"
+                                    icon="calendar"
+                                    helper="Último dia trabalhado."
+                                />
                             </div>
                         </div>
 
-                        <hr class="border-slate-200 dark:border-slate-700">
+                        <hr class="border-slate-200 dark:border-slate-700/60">
 
                         <!-- Motivo -->
                         <div class="space-y-4">
-                            <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">A Demissão</h3>
-                            
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold">2</span>
+                                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">A Demissão</h3>
+                            </div>
+
                             <x-select model="form.motivo_rescisao" label="Motivo da Saída" name="motivo" :options="[
                                 'dispensa_sem_justa_causa' => 'Demissão sem justa causa (A empresa me demitiu)',
                                 'pedido_de_demissao' => 'Pedido de demissão (Eu pedi para sair)',
@@ -88,28 +142,84 @@
                             ]" />
                         </div>
 
-                        <hr class="border-slate-200 dark:border-slate-700">
+                        <hr class="border-slate-200 dark:border-slate-700/60">
 
-                        <!-- Férias e FGTS (Modo Básico) -->
-                        <div class="space-y-4">
-                            <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Saldos</h3>
-                            
-                            <div class="flex items-center space-x-2">
-                                <input x-model="form.possui_ferias_vencidas" type="checkbox" id="ferias_venc" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500 bg-white dark:bg-slate-700 dark:border-slate-600">
-                                <label for="ferias_venc" class="text-sm text-slate-700 dark:text-slate-300">Tenho férias vencidas (1 ano ou mais atrasadas)</label>
+                        <!-- Férias -->
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2">
+                                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 text-xs font-bold">3</span>
+                                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Saldos</h3>
                             </div>
+
+                            <label for="ferias_venc"
+                                   class="flex items-center gap-3 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80
+                                          bg-slate-50 dark:bg-slate-800/40 cursor-pointer
+                                          hover:border-brand-400 dark:hover:border-brand-500
+                                          hover:bg-brand-50 dark:hover:bg-brand-950/20
+                                          transition-all duration-150 group">
+                                <input
+                                    x-model="form.possui_ferias_vencidas"
+                                    type="checkbox"
+                                    id="ferias_venc"
+                                    class="fb-check"
+                                >
+                                <div>
+                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-200 group-hover:text-brand-700 dark:group-hover:text-brand-300">Tenho férias vencidas</span>
+                                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">1 período ou mais atrasado (≥ 12 meses sem tirar férias)</p>
+                                </div>
+                            </label>
                         </div>
 
                         <!-- Campos Avançados -->
-                        <div x-show="showAdvanced" x-transition.opacity class="space-y-4 pt-4 mt-4 border-t border-slate-200 dark:border-slate-700 p-4 bg-slate-50 dark:bg-slate-800/80 rounded-xl">
-                            <h3 class="text-sm font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400 mb-2">Campos Avançados</h3>
-                            
-                            <x-input model="form.saldo_fgts_para_fins_rescisorios" type="number" step="0.01" label="Saldo de FGTS (R$)" name="saldo_fgts" helper="Se vazio, faremos uma estimativa." />
-                            <x-input model="form.salario_variavel_media_12m" type="number" step="0.01" label="Média Horas Extras / Comissões (R$)" name="variavel" />
-                            <x-input model="form.adiantamento_salarial" type="number" step="0.01" label="Adiantamentos ou Descontos a abater (R$)" name="descontos_extra" />
-                            <x-input model="form.dependentes_ir" type="number" label="Dependentes no Imposto de Renda" name="dependentes" />
+                        <div x-show="showAdvanced" x-transition.opacity
+                             class="space-y-4 pt-4 mt-1 border-t border-dashed border-slate-200 dark:border-slate-700/60
+                                    p-4 bg-slate-50/70 dark:bg-slate-800/40 rounded-xl">
+                            <div class="flex items-center gap-2 mb-3">
+                                <svg class="w-4 h-4 text-brand-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                <h3 class="text-sm font-semibold uppercase tracking-wider text-brand-600 dark:text-brand-400">Campos Avançados</h3>
+                            </div>
+
+                            <x-input
+                                model="form.saldo_fgts_para_fins_rescisorios"
+                                type="text"
+                                x-mask:dynamic="$money($input, ',', '.', 2)"
+                                label="Saldo de FGTS (R$)"
+                                name="saldo_fgts"
+                                placeholder="Ex: 12.500,00"
+                                icon="currency"
+                                helper="Se vazio, estimamos com base no histórico."
+                            />
+                            <x-input
+                                model="form.salario_variavel_media_12m"
+                                type="text"
+                                x-mask:dynamic="$money($input, ',', '.', 2)"
+                                label="Média de Horas Extras / Comissões (R$)"
+                                name="variavel"
+                                placeholder="Ex: 500,00"
+                                icon="currency"
+                            />
+                            <x-input
+                                model="form.adiantamento_salarial"
+                                type="text"
+                                x-mask:dynamic="$money($input, ',', '.', 2)"
+                                label="Adiantamentos / Descontos (R$)"
+                                name="descontos_extra"
+                                placeholder="Ex: 200,00"
+                                icon="currency"
+                            />
+                            <x-input
+                                model="form.dependentes_ir"
+                                type="number"
+                                label="Dependentes no IR"
+                                name="dependentes"
+                                placeholder="0"
+                                icon="number"
+                            />
                         </div>
-                        
+
                     </form>
                 </x-card>
             </div>
@@ -306,6 +416,13 @@
                 return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
             },
 
+            cleanFormattedNumber(val) {
+                if (!val) return 0;
+                if (typeof val === 'number') return val;
+                const cleaned = val.replace(/\./g, '').replace(',', '.');
+                return parseFloat(cleaned) || 0;
+            },
+
             async calcular() {
                 if (!this.form.salario_base_mensal || !this.form.data_admissao || !this.form.data_desligamento) return;
                 
@@ -317,6 +434,15 @@
                 try {
                     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                     
+                    const payload = {
+                        ...this.form,
+                        salario_base_mensal: this.cleanFormattedNumber(this.form.salario_base_mensal),
+                        saldo_fgts_para_fins_rescisorios: this.cleanFormattedNumber(this.form.saldo_fgts_para_fins_rescisorios),
+                        salario_variavel_media_12m: this.cleanFormattedNumber(this.form.salario_variavel_media_12m),
+                        adiantamento_salarial: this.cleanFormattedNumber(this.form.adiantamento_salarial),
+                        possui_ferias_vencidas: this.form.possui_ferias_vencidas ? 'sim' : 'nao'
+                    };
+
                     const response = await fetch('/api/calculo/rescisao', {
                         method: 'POST',
                         headers: {
@@ -324,7 +450,7 @@
                             'X-CSRF-TOKEN': token,
                             'Accept': 'application/json'
                         },
-                        body: JSON.stringify({...this.form, possui_ferias_vencidas: this.form.possui_ferias_vencidas ? 'sim' : 'nao'})
+                        body: JSON.stringify(payload)
                     });
 
                     if (!response.ok) throw new Error('Erro na API');
