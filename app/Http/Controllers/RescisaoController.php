@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Services\RescisaoCalculatorService;
+use Illuminate\Http\Request;
 
 class RescisaoController extends Controller
 {
@@ -46,9 +46,10 @@ class RescisaoController extends Controller
 
         try {
             $resultado = $this->calculatorService->calcular($request->all());
+
             return response()->json($resultado);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erro ao processar cálculo corporativo: ' . $e->getMessage()], 400);
+            return response()->json(['error' => 'Erro ao processar cálculo corporativo: '.$e->getMessage()], 400);
         }
     }
 }

@@ -1,6 +1,7 @@
 <?php
-use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\RescisaoController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('/calculadora-rescisao-trabalhista');

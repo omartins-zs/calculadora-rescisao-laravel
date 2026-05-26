@@ -399,17 +399,6 @@
             init() {
                 // Previne submit do form (enter pressionado)
                 this.$el.querySelector('form').addEventListener('submit', e => e.preventDefault());
-                
-                // Pré-preenche caso ache dados
-                const saved = localStorage.getItem('last_sim');
-                if (saved) {
-                    try {
-                        this.form = {...this.form, ...JSON.parse(saved)};
-                        if (this.form.salario_base_mensal) {
-                            this.calcular();
-                        }
-                    } catch (e) {}
-                }
             },
 
             formatMoney(value) {
@@ -427,9 +416,6 @@
                 if (!this.form.salario_base_mensal || !this.form.data_admissao || !this.form.data_desligamento) return;
                 
                 this.isLoading = true;
-                
-                // Salva no historico
-                localStorage.setItem('last_sim', JSON.stringify(this.form));
 
                 try {
                     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');

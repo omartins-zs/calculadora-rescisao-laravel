@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Services\RescisaoCalculatorService;
 use App\Services\AvisoPrevioService;
-use App\Services\FeriasService;
 use App\Services\DecimoTerceiroService;
-use App\Services\FgtsService;
 use App\Services\DescontosService;
+use App\Services\FeriasService;
+use App\Services\FgtsService;
+use App\Services\RescisaoCalculatorService;
 use Tests\TestCase;
 
 class RescisaoMotorTest extends TestCase
@@ -17,13 +17,13 @@ class RescisaoMotorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->service = new RescisaoCalculatorService(
-            new AvisoPrevioService(),
-            new FeriasService(),
-            new DecimoTerceiroService(),
-            new FgtsService(),
-            new DescontosService()
+            new AvisoPrevioService,
+            new FeriasService,
+            new DecimoTerceiroService,
+            new FgtsService,
+            new DescontosService
         );
     }
 
@@ -45,7 +45,7 @@ class RescisaoMotorTest extends TestCase
         $this->assertArrayHasKey('items', $resultado);
         $this->assertArrayHasKey('totals', $resultado);
         $this->assertArrayHasKey('fgts', $resultado);
-        
+
         // Verifica Saldo de Salário: (3000 / 30) * 10 = 1000
         $saldoSalario = collect($resultado['items'])->firstWhere('nome', 'Saldo de Salário');
         $this->assertNotNull($saldoSalario);
@@ -60,7 +60,7 @@ class RescisaoMotorTest extends TestCase
         $feriasVencidas = collect($resultado['items'])->firstWhere('nome', 'Férias Vencidas + 1/3');
         $this->assertNotNull($feriasVencidas);
         $this->assertEquals(4000, $feriasVencidas['valor']);
-        
+
         $this->assertEquals(0.40, $resultado['fgts']['percentual_multa']);
         $this->assertTrue($resultado['totals']['liquido'] > 0);
     }

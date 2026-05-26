@@ -14,14 +14,14 @@ class DecimoTerceiroService
     {
         $data = new DateTime($dataDesligamentoProjetada);
         $ano = $data->format('Y');
-        
+
         $meses = 0;
-        for ($mes = 1; $mes <= (int)$data->format('m'); $mes++) {
-            if ($mes < (int)$data->format('m')) {
+        for ($mes = 1; $mes <= (int) $data->format('m'); $mes++) {
+            if ($mes < (int) $data->format('m')) {
                 $meses++;
             } else {
                 // Mês da rescisão
-                $diasNoMes = (int)$data->format('d');
+                $diasNoMes = (int) $data->format('d');
                 if ($diasNoMes >= 15) {
                     $meses++;
                 }

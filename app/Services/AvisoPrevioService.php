@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use DateTime;
-use DateInterval;
 
 class AvisoPrevioService
 {
@@ -17,10 +16,10 @@ class AvisoPrevioService
         $intervalo = $admissao->diff($desligamento);
 
         $anosCompletos = $intervalo->y;
-        
+
         $diasBase = 30;
         $diasAdicionais = $anosCompletos * 3;
-        
+
         // Máximo de 90 dias
         return min($diasBase + $diasAdicionais, 90);
     }

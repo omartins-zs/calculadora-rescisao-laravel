@@ -14,14 +14,14 @@ class FeriasService
     {
         $inicio = new DateTime($dataInicioPeriodoAquisitivo);
         $fim = new DateTime($dataDesligamentoProjetada);
-        
+
         $meses = 0;
         $atual = clone $inicio;
-        
+
         while ($atual <= $fim) {
             $proxMes = clone $atual;
             $proxMes->modify('+1 month');
-            
+
             if ($proxMes <= $fim) {
                 $meses++;
             } else {

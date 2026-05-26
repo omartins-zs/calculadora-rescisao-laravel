@@ -15,7 +15,7 @@ return new class extends Migration
             $table->longText('payload_json')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
-            
+
             $table->foreign('run_id')->references('id')->on('calculator_runs')->nullOnDelete();
         });
     }
