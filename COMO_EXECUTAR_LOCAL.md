@@ -1,64 +1,47 @@
-# 📗 Como Executar (Local)
-
-Este guia descreve os passos para rodar a aplicação nativamente no seu sistema (sem Docker).
-O projeto utiliza a stack **Laravel + PostgreSQL + Redis + Vite (Node.js)**. 
-
-*(Atenção: É necessário você já ter PHP, Composer, Node.js, PostgreSQL e Redis instalados localmente).*
+# 📗 COMO_EXECUTAR_LOCAL.md
 
 ## 1) Preparar ambiente
 
-1. Crie uma cópia do arquivo de configuração de exemplo:
-   ```bash
-   cp .env.example .env
-   ```
-2. Abra o arquivo `.env` gerado e ative o **bloco Local** (configure `DB_HOST=127.0.0.1`, `REDIS_HOST=127.0.0.1` e informe suas credenciais locais do seu banco de dados PostgreSQL).
+- Copiar o arquivo `.env.example` para `.env`
+- Ativar o bloco **Local** no arquivo `.env` (certifique-se de configurar banco SQLite padrão ou PostgreSQL/Redis apontando para `127.0.0.1`).
 
 ## 2) Instalar dependências
 
-Em seu terminal, instale os pacotes do PHP e Javascript:
+No terminal do seu SO, instale os pacotes necessários:
 
-**Laravel (Backend):**
+**Laravel:**
 ```bash
 composer install
 ```
 
-**Node (Frontend / Vite):**
+**Node:**
 ```bash
 npm install
 ```
 
-## 3) Inicialização e Migrações
+## 3) Rodar aplicação
 
-No primeiro uso, gere a chave de segurança da aplicação e rode as migrações do banco (verifique se já tem um banco de dados criado localmente que corresponda ao `DB_DATABASE` no seu `.env`):
+Inicie o backend e o ambiente de assets do frontend em terminais separados:
 
-```bash
-php artisan key:generate
-php artisan migrate
-```
-
-## 4) Rodar aplicação
-
-Para que tanto a API/Views do Laravel quanto os assets do frontend funcionem, você precisará de dois terminais abertos simultaneamente.
-
-**Terminal 1 (Backend - Laravel):**
+**Laravel (Terminal 1):**
 ```bash
 php artisan serve
 ```
 
-**Terminal 2 (Frontend - Node/Vite):**
+**Node (Terminal 2):**
 ```bash
 npm run dev
 ```
 
-## 5) Filas / Workers (se aplicável)
+## 4) Filas / Workers (se existir)
 
-Caso sua aplicação esteja despachando jobs localmente pelo Laravel, abra um terceiro terminal e rode:
+Se a aplicação estiver processando tarefas em background (queues), abra um novo terminal:
 
+**Laravel:**
 ```bash
 php artisan queue:work
 ```
 
-## 6) URLs
+## 5) URLs
 
-- **App Local (Laravel):** [http://localhost:8000](http://localhost:8000) *(ou a porta informada pelo artisan serve)*
-- **Assets / Vite:** Normalmente em [http://localhost:5173](http://localhost:5173) (rodam sob o site local em modo de desenvolvimento)
+- **App local:** http://localhost:8000

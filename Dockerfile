@@ -1,9 +1,10 @@
-FROM php:8.3-fpm-alpine
+FROM php:8.4-fpm-alpine
 
-# Instalar dependências de sistema mínimas e de build
+# Instalar dependências de sistema
 RUN apk add --no-cache \
     bash \
     curl \
+    git \
     libpng-dev \
     libzip-dev \
     zlib-dev \
@@ -11,7 +12,7 @@ RUN apk add --no-cache \
     nodejs \
     npm
 
-# Instalar extensões PHP (Postgres, MySQL, GD, Zip, OPcache)
+# Instalar extensões PHP
 RUN docker-php-ext-install gd zip pdo pdo_pgsql pdo_mysql opcache
 
 # Instalar e habilitar Redis
@@ -20,27 +21,23 @@ RUN apk add --no-cache pcre-dev $PHPIZE_DEPS \
     && docker-php-ext-enable redis \
     && apk del pcre-dev $PHPIZE_DEPS
 
-# Copias de OPcache e PHP configs otimizados pro FPM
-COPY ./docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
+# Config PHP-FPM (pool + php settings unificado)
 COPY ./docker/php/fpm-performance.conf /usr/local/etc/php-fpm.d/zz-docker.conf
 
-# Obter Composer
+# OPcache e realpath cache (PHP_INI_SYSTEM - deve ir em .ini separado)
+RUN echo "opcache.enable=1\nopcache.memory_consumption=256\nopcache.interned_strings_buffer=16\nopcache.max_accelerated_files=20000\nopcache.revalidate_freq=0\nopcache.validate_timestamps=1\nrealpath_cache_size=4096K\nrealpath_cache_ttl=600" > /usr/local/etc/php/conf.d/opcache.ini
+
+# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
-# Copiar script de boot
-COPY ./docker/scripts/start-app.sh /usr/local/bin/start-app.sh
-RUN chmod +x /usr/local/bin/start-app.sh
-
-# Não fazemos COPY manual do projeto nesta imagem base em caso de Bind de volume 
-# Mas para garantir build prod pronta, deixaremos:
 COPY . .
 
-RUN composer install --no-interaction --optimize-autoloader
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 RUN npm install && npm run build
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
 EXPOSE 9000
 
-CMD ["/usr/local/bin/start-app.sh"]
+CMD ["php-fpm"]

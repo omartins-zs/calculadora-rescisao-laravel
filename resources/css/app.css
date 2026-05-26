@@ -1,13 +1,147 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
+/* ------------------------------------------------------------------ */
+/*  Dark mode: classe .dark no <html> controlada por JS                 */
+/*  O JS no layout.blade.php aplica .dark com base em prefers-color-scheme */
+/* ------------------------------------------------------------------ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+/* ------------------------------------------------------------------ */
+/*  Theme tokens                                                        */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-brand-50:  #ecfdf5;
+  --color-brand-100: #d1fae5;
+  --color-brand-200: #a7f3d0;
+  --color-brand-300: #6ee7b7;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+  --color-brand-700: #047857;
+  --color-brand-800: #065f46;
+  --color-brand-900: #064e3b;
+  --color-brand-950: #022c22;
+
+  --font-family-sans: 'Inter', sans-serif;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                                */
+/* ------------------------------------------------------------------ */
 @layer base {
-  body {
-    @apply bg-slate-50 text-slate-800 antialiased font-sans transition-colors duration-200;
+  html {
+    scroll-behavior: smooth;
   }
-  
-  .dark body {
-    @apply bg-slate-900 text-slate-200;
+
+  body {
+    font-family: var(--font-family-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scrollbar */
+  :root {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+
+  .dark {
+    scrollbar-color: #475569 transparent;
+    color-scheme: dark;
+  }
+
+  /* Date picker icon - dark mode */
+  .dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/*  Form components                                                     */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Checkbox estilizado */
+  .fb-check {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 0.3rem;
+    border: 2px solid #cbd5e1;
+    background: white;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .dark .fb-check {
+    border-color: #475569;
+    background: #1e293b;
+  }
+
+  .fb-check:checked {
+    background: var(--color-brand-500);
+    border-color: var(--color-brand-500);
+  }
+
+  .fb-check:checked::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 5px;
+    height: 9px;
+    border: 2px solid white;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg);
+  }
+
+  .fb-check:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-500) 30%, transparent);
+  }
+
+  /* Remove seta padrão dos selects */
+  select {
+    background-image: none !important;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Utilities                                                           */
+/* ------------------------------------------------------------------ */
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.35s ease forwards;
+  }
+
+  .glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------------------------------------ */
+/*  FAQ / Details                                                       */
+/* ------------------------------------------------------------------ */
+details summary::-webkit-details-marker { display: none; }
+details[open] summary .chevron { transform: rotate(180deg); }
+.chevron { transition: transform 0.25s ease; }
